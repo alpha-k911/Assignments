@@ -111,79 +111,26 @@ void freeFree(freeList *ptr){
     }
 }
 void _mallocf(int size, char a[]){
-    int i,j,k,s,e,x,flag;
+    int i,j,e,k,s,x,flag, found = 0;
     allocList *a1ptr,*tptr,*pre;
     freeList *ptr;
-    varList *tvptr;
+    varList *tvptr,*vvptr;
     ptr = fptr;
     i = 0;
     j = size - 1;
     flag = 0;
-    while (!flag && ptr) {
-        x = ptr -> end - ptr -> start + 1;
-        if (x >= size) {
-            flag = 1;
-            s = ptr -> start;
-            e = ptr -> start + size -1;
-            a1ptr = init_alloc1(s, e);
-            tvptr = (varList*)malloc(sizeof(varList));
-            strcpy(tvptr -> var_name, a);
-            tvptr -> node = a1ptr;
-            tvptr -> next = vptr;
-            vptr = tvptr;
-            nxt = e;
-            if (x != size) {
-                ptr -> start = e + 1;
-            }
-            else{
-                freeFree(ptr);
-            }
-        }
-        else{
-            ptr = ptr -> next;
-        }
-    }
-    if (flag == 0) {
-        /* code */
-        printf("Out of space!!!\n");
-    }
-    else{
-        tptr = aptr;
-        pre = aptr;
-        if (aptr) {
+    vvptr = vptr;
+    while (vvptr && !found) {
+        i = strcmp(a, vvptr -> var_name);
+        if (i == 0) {
             /* code */
-            while (tptr != NULL && a1ptr -> start > tptr -> start) {
-                pre = tptr;
-                tptr = tptr -> next;
-            }
-            if (pre != tptr) {
-                /* code */
-                a1ptr -> next = tptr;
-                pre -> next = a1ptr;
-            }
-            else{
-                a1ptr -> next = tptr;
-                aptr = a1ptr;
-            }
+            found = 1;
         }
         else{
-            aptr = a1ptr;
+            vvptr = vvptr -> next;
         }
-        // traverseA(a1ptr);
-        printf("Successfully Allocated\n");
     }
-}
-void _mallocn(int size, char a[]){
-    int found=0,i,j,x,y,s,e,n,flag=0;
-    allocList *a1ptr,*tptr,*pre;
-    freeList *ptr;
-    varList *tvptr;
-    ptr = fptr;
-    while ((nxt > ptr -> start)&&(ptr != NULL)) {
-        ptr = ptr -> next;
-    }
-    if (ptr) {
-        flag = 0;
+    if (!found) {
         while (!flag && ptr) {
             x = ptr -> end - ptr -> start + 1;
             if (x >= size) {
@@ -196,7 +143,7 @@ void _mallocn(int size, char a[]){
                 tvptr -> node = a1ptr;
                 tvptr -> next = vptr;
                 vptr = tvptr;
-                n = e + 1;
+                nxt = e;
                 if (x != size) {
                     ptr -> start = e + 1;
                 }
@@ -208,28 +155,11 @@ void _mallocn(int size, char a[]){
                 ptr = ptr -> next;
             }
         }
-        if (ptr == NULL && flag == 0) {
-            ptr = fptr;
-            while (!flag && ptr) {
-                x = ptr -> end - ptr -> start + 1;
-                if (x >= size) {
-                    flag = 1;
-                    s = ptr -> start;
-                    e = ptr -> start + size -1;
-                    a1ptr = init_alloc1(s, e);
-                    n = e + 1;
-                    if (x != size) {
-                        ptr -> start = e + 1;
-                    }
-                    else{
-                        freeFree(ptr);
-                    }
-                }
-                else{
-                    ptr = ptr -> next;
-                }
-            }
-        }else if(flag == 1){
+        if (flag == 0) {
+            /* code */
+            printf("Out of space!!!\n");
+        }
+        else{
             tptr = aptr;
             pre = aptr;
             if (aptr) {
@@ -252,9 +182,197 @@ void _mallocn(int size, char a[]){
                 aptr = a1ptr;
             }
             // traverseA(a1ptr);
-            printf("Successfully Allocated\n");
-
+            printf("Successfully Allocated: %s\n",a);
         }
+    }
+    else{
+        printf("Can't Allocate %s as it already exits\n", a);
+    }
+}
+void _mallocn(int size, char a[]){
+    int found=0,i,j,x,y,s,e,n,flag=0;
+    allocList *a1ptr,*tptr,*pre;
+    freeList *ptr;
+    ptr = fptr;
+    varList *tvptr,*vvptr;
+    vvptr = vptr;
+    while (vvptr && !found) {
+        i = strcmp(a, vvptr -> var_name);
+        if (i == 0) {
+            /* code */
+            found = 1;
+        }
+        else{
+            vvptr = vvptr -> next;
+        }
+    }
+    if (!found) {
+        while ((nxt > ptr -> start)&&(ptr != NULL)) {
+            ptr = ptr -> next;
+        }
+        if (ptr) {
+            flag = 0;
+            while (!flag && ptr) {
+                x = ptr -> end - ptr -> start + 1;
+                if (x >= size) {
+                    flag = 1;
+                    s = ptr -> start;
+                    e = ptr -> start + size -1;
+                    a1ptr = init_alloc1(s, e);
+                    tvptr = (varList*)malloc(sizeof(varList));
+                    strcpy(tvptr -> var_name, a);
+                    tvptr -> node = a1ptr;
+                    tvptr -> next = vptr;
+                    vptr = tvptr;
+                    n = e + 1;
+                    if (x != size) {
+                        ptr -> start = e + 1;
+                    }
+                    else{
+                        freeFree(ptr);
+                    }
+                }
+                else{
+                    ptr = ptr -> next;
+                }
+            }
+            if (ptr == NULL && flag == 0) {
+                ptr = fptr;
+                while (!flag && ptr) {
+                    x = ptr -> end - ptr -> start + 1;
+                    if (x >= size) {
+                        flag = 1;
+                        s = ptr -> start;
+                        e = ptr -> start + size -1;
+                        a1ptr = init_alloc1(s, e);
+                        n = e + 1;
+                        if (x != size) {
+                            ptr -> start = e + 1;
+                        }
+                        else{
+                            freeFree(ptr);
+                        }
+                    }
+                    else{
+                        ptr = ptr -> next;
+                    }
+                }
+            }else if(flag == 1){
+                tptr = aptr;
+                pre = aptr;
+                if (aptr) {
+                    /* code */
+                    while (tptr != NULL && a1ptr -> start > tptr -> start) {
+                        pre = tptr;
+                        tptr = tptr -> next;
+                    }
+                    if (pre != tptr) {
+                        /* code */
+                        a1ptr -> next = tptr;
+                        pre -> next = a1ptr;
+                    }
+                    else{
+                        a1ptr -> next = tptr;
+                        aptr = a1ptr;
+                    }
+                }
+                else{
+                    aptr = a1ptr;
+                }
+                // traverseA(a1ptr);
+                printf("Successfully Allocated: %s\n",a);
+
+            }
+        }
+    }
+    else{
+        printf("Can't Allocate %s as it already exits\n", a);
+    }
+}
+void _mallocb(int size, char a[]){
+    int i,j,e,k,s,x,flag,min,found=0;
+    allocList *a1ptr,*tptr,*pre;
+    freeList *ptr, *mptr;
+    varList *tvptr,*vvptr;
+    ptr = fptr;
+    i = 0;
+    j = size - 1;
+    flag = 0;
+    min = 101;
+    vvptr = vptr;
+    while (vvptr && !found) {
+        i = strcmp(a, vvptr -> var_name);
+        if (i == 0) {
+            /* code */
+            found = 1;
+        }
+        else{
+            vvptr = vvptr -> next;
+        }
+    }
+    if (!found) {
+        while (ptr) {
+            x = ptr -> end - ptr -> start + 1;
+            if (x >= size) {
+                /* code */
+                if (x < min) {
+                    /* code */
+                    min = x;
+                    mptr = ptr;
+                }
+            }
+            ptr = ptr -> next;
+        }
+        if (min >= size) {
+            flag = 1;
+            s = mptr -> start;
+            e = mptr -> start + size -1;
+            a1ptr = init_alloc1(s, e);
+            tvptr = (varList*)malloc(sizeof(varList));
+            strcpy(tvptr -> var_name, a);
+            tvptr -> node = a1ptr;
+            tvptr -> next = vptr;
+            vptr = tvptr;
+            nxt = e;
+            if (x != size) {
+                mptr -> start = e + 1;
+            }
+            else{
+                freeFree(mptr);
+            }
+        }
+        if (flag == 0) {
+            /* code */
+            printf("Out of space!!!\n");
+        }
+        else{
+            tptr = aptr;
+            pre = aptr;
+            if (aptr) {
+                /* code */
+                while (tptr != NULL && a1ptr -> start > tptr -> start) {
+                    pre = tptr;
+                    tptr = tptr -> next;
+                }
+                if (pre != tptr) {
+                    /* code */
+                    a1ptr -> next = tptr;
+                    pre -> next = a1ptr;
+                }
+                else{
+                    a1ptr -> next = tptr;
+                    aptr = a1ptr;
+                }
+            }
+            else{
+                aptr = a1ptr;
+            }
+            // traverseA(a1ptr);
+            printf("Successfully Allocated: %s\n",a);
+        }
+    }
+    else{
+        printf("Can't Allocate %s as it already exits\n", a);
     }
 }
 void _free(char a[]){
@@ -355,9 +473,9 @@ int main(int argc, char const *argv[]) {
     init_var();
     init_alloc();
     strcpy(a,"x\0");
-    _mallocf(10,a);
-    strcpy(a,"y\0");
-    _mallocn(20,a);
+    _mallocf(40,a);
+    strcpy(a,"x\0");
+    _mallocf(30,a);
     // traverseA(aptr);
     // traverseF(fptr);
     // traverseAV(vptr);
@@ -365,8 +483,12 @@ int main(int argc, char const *argv[]) {
     // printf("\n");
     _free("x\0");
     // _free("y\0");
-    _mallocf(10,"z\0");
-    traverseA(aptr);
+    _mallocb(10,"z\0");
+    _mallocb(20,"p\0");
+    _mallocb(10,"l\0");
+    strcpy(a,"x\0");
+    _mallocf(30,a);
+    // traverseA(aptr);
     traverseF(fptr);
     traverseAV(vptr);
 
