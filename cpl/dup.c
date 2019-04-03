@@ -70,9 +70,8 @@ void traverseA(allocList *nptr){
 void traverseF(freeList *nptr){
     if (nptr) {
         /* code */
-        printf("Free_List: \n");
         while (nptr) {
-            printf("%d - %d \n", nptr -> start, nptr -> end);
+            printf("Free: %d - %d \n", nptr -> start, nptr -> end);
             nptr = nptr -> next;
         }
     }else{
@@ -83,10 +82,9 @@ void traverseAV(varList *nptr){
     allocList *alptr;
     if (nptr) {
         /* code */
-        printf("Alloc_List: \n");
         while (nptr) {
             alptr = nptr -> node;
-            printf("%s = %d - %d \n", nptr -> var_name, alptr -> start, alptr -> end);
+            printf("Allocated: %s = %d - %d \n", nptr -> var_name, alptr -> start, alptr -> end);
             nptr = nptr -> next;
         }
     }else{
@@ -422,23 +420,17 @@ void _free(char a[]){
                 tfptr = tfptr -> next;
             }
             if (prefptr != tfptr) {
-                /* code */
+                    /* code */
                 if (prefptr -> end + 1 == anptr -> start) {
                     /* code */
-                    if (tfptr){
-                        if (anptr -> end + 1 == tfptr -> start) {
-                            /* code */
-                            prefptr -> end = tfptr -> end;
-                            prefptr -> next = tfptr -> next;
-                            free(tfptr);
-                        }else{
-                            prefptr -> end = anptr -> end;
-                        }
-                    } else{
+                    if (anptr -> end + 1 == tfptr -> start) {
+                        /* code */
+                        prefptr -> end = tfptr -> end;
+                        prefptr -> next = tfptr -> next;
+                        free(tfptr);
+                    }else{
                         prefptr -> end = anptr -> end;
-
                     }
-
                 }else{
                     if (anptr -> end + 1 == tfptr -> start) {
                         /* code */
@@ -452,21 +444,13 @@ void _free(char a[]){
                 }
             }
             else{
-                if (prefptr) {
+                if (anptr -> end + 1 == prefptr -> start) {
                     /* code */
-                    if (anptr -> end + 1 == prefptr -> start) {
-                        /* code */
-                        prefptr -> start = anptr -> start;
-                    }
-                    else{
-                        dptr = init_free1(anptr -> start, anptr -> end);
-                        dptr -> next = fptr;
-                        fptr = dptr;
-                    }
+                    prefptr -> start = anptr -> start;
                 }
                 else{
                     dptr = init_free1(anptr -> start, anptr -> end);
-                    dptr -> next = NULL;
+                    dptr -> next = fptr;
                     fptr = dptr;
                 }
             }
@@ -484,16 +468,14 @@ void _free(char a[]){
     }
 }
 int main(int argc, char const *argv[]) {
-    int l=1,choice,d=0;
-    char chr[10];
     char a[10];
     init_free();
     init_var();
     init_alloc();
     strcpy(a,"x\0");
-    _mallocf(100,a);
-    // strcpy(a,"x\0");
-    // _mallocf(30,a);
+    _mallocf(40,a);
+    strcpy(a,"x\0");
+    _mallocf(30,a);
     // traverseA(aptr);
     // traverseF(fptr);
     // traverseAV(vptr);
@@ -501,63 +483,14 @@ int main(int argc, char const *argv[]) {
     // printf("\n");
     _free("x\0");
     // _free("y\0");
-    // _mallocb(10,"z\0");
-    // _mallocb(20,"p\0");
-    // _mallocb(10,"l\0");
-    // strcpy(a,"x\0");
-    // _mallocf(30,a);
+    _mallocb(10,"z\0");
+    _mallocb(20,"p\0");
+    _mallocb(10,"l\0");
+    strcpy(a,"x\0");
+    _mallocf(30,a);
     // traverseA(aptr);
     traverseF(fptr);
     traverseAV(vptr);
-    printf("===============HEAP MANAGEMENT==============\n");
-    while (l) {
-        printf("============================================\n");
-        printf("1.Malloc => First Fit\n2.Malloc => Next Fit\n3.Malloc => Best Fit\n4.Free()\n5.Display Alloc_List & Free_List\n");
-        printf("============================================\n");
-        printf("6.ExIt\n");
-        printf("============================================\n");
-        printf("Enter your choice>>> ");
-        scanf("%d",&choice );
-        printf("============================================\n");
-        switch (choice) {
-            case 1 : printf("Enter the Variable name to allocate Memory: ");
-                scanf("%s", &chr);
-                printf("Enter the Size: ");
-                scanf("%d", &d);
-                if (d>=1 && d<=99) {
-                    _mallocf(d,chr);
-                }
-                break;
-            case 2 : printf("Enter the Variable name to allocate Memory: ");
-                scanf("%s", &chr);
-                printf("Enter the Size: ");
-                scanf("%d", &d);
-                if (d>=1 && d<=99) {
-                    _mallocn(d,chr);
-                }
-                break;
-            case 3 : printf("Enter the Variable name to allocate Memory: ");
-                scanf("%s", &chr);
-                printf("Enter the Size: ");
-                scanf("%d", &d);
-                if (d>=1 && d<=99) {
-                    _mallocb(d,chr);
-                }
-                break;
-            case 4 : printf("Enter the Variable to be freed: ");
-                scanf("%s", &chr);
-                _free(chr);
-                break;
-            case 5 : traverseF(fptr);
-                traverseAV(vptr);
-                break;
-            case 6 : l = 0;
-                break;
-            default : printf("Enter a proper Choice....\n");
-                break;
-        }
-    }
-
 
     return 0;
 }
