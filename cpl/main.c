@@ -68,9 +68,9 @@ void traverseA(allocList *nptr){
     }
 }
 void traverseF(freeList *nptr){
+    printf("Free_List: \n");
     if (nptr) {
         /* code */
-        printf("Free_List: \n");
         while (nptr) {
             printf("%d - %d \n", nptr -> start, nptr -> end);
             nptr = nptr -> next;
@@ -81,9 +81,9 @@ void traverseF(freeList *nptr){
 }
 void traverseAV(varList *nptr){
     allocList *alptr;
+    printf("Alloc_List: \n");
     if (nptr) {
         /* code */
-        printf("Alloc_List: \n");
         while (nptr) {
             alptr = nptr -> node;
             printf("%s = %d - %d \n", nptr -> var_name, alptr -> start, alptr -> end);
@@ -209,7 +209,7 @@ void _mallocn(int size, char a[]){
         }
     }
     if (!found) {
-        while ((nxt > ptr -> start)&&(ptr != NULL)) {
+        while ((ptr != NULL)&&(nxt > ptr -> start)) {
             ptr = ptr -> next;
         }
         if (ptr) {
@@ -286,6 +286,9 @@ void _mallocn(int size, char a[]){
 
             }
         }
+        else{
+            printf("Out of space!!\n");
+        }
     }
     else{
         printf("Can't Allocate %s as it already exits\n", a);
@@ -300,7 +303,7 @@ void _mallocb(int size, char a[]){
     i = 0;
     j = size - 1;
     flag = 0;
-    min = 101;
+    min = -1;
     vvptr = vptr;
     while (vvptr && !found) {
         i = strcmp(a, vvptr -> var_name);
@@ -313,6 +316,9 @@ void _mallocb(int size, char a[]){
         }
     }
     if (!found) {
+        if(ptr){
+            min = 101;
+        }
         while (ptr) {
             x = ptr -> end - ptr -> start + 1;
             if (x >= size) {
@@ -490,8 +496,8 @@ int main(int argc, char const *argv[]) {
     init_free();
     init_var();
     init_alloc();
-    strcpy(a,"x\0");
-    _mallocf(100,a);
+    // strcpy(a,"x\0");
+    // _mallocf(100,a);
     // strcpy(a,"x\0");
     // _mallocf(30,a);
     // traverseA(aptr);
@@ -499,7 +505,7 @@ int main(int argc, char const *argv[]) {
     // traverseAV(vptr);
     // strcpy(a,"x\0");
     // printf("\n");
-    _free("x\0");
+    // _free("x\0");
     // _free("y\0");
     // _mallocb(10,"z\0");
     // _mallocb(20,"p\0");
@@ -524,7 +530,7 @@ int main(int argc, char const *argv[]) {
                 scanf("%s", &chr);
                 printf("Enter the Size: ");
                 scanf("%d", &d);
-                if (d>=1 && d<=99) {
+                if (d>=1 && d<=100) {
                     _mallocf(d,chr);
                 }
                 break;
@@ -532,7 +538,7 @@ int main(int argc, char const *argv[]) {
                 scanf("%s", &chr);
                 printf("Enter the Size: ");
                 scanf("%d", &d);
-                if (d>=1 && d<=99) {
+                if (d>=1 && d<=100) {
                     _mallocn(d,chr);
                 }
                 break;
@@ -540,7 +546,7 @@ int main(int argc, char const *argv[]) {
                 scanf("%s", &chr);
                 printf("Enter the Size: ");
                 scanf("%d", &d);
-                if (d>=1 && d<=99) {
+                if (d>=1 && d<=100) {
                     _mallocb(d,chr);
                 }
                 break;
@@ -561,38 +567,3 @@ int main(int argc, char const *argv[]) {
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//nsak
